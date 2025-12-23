@@ -4,6 +4,8 @@ A small Flask web app that visualizes a **custom “solar year” phase model** 
 
 It’s designed as a clean, always-on **status card** with a progress bar and season-themed backgrounds.
 
+You can see deployed web app here https://solyear-public.cwx.hr
+
 ---
 
 ## What it shows
