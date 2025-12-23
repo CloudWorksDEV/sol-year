@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar State – Zagreb</title>
+
+<style>
+:root { --s: 1; }
+@media (max-width: 600px) { :root { --s: 1.25; } }
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  color: #eaeaea;
+}
+
+/* BACKGROUNDS (body only) */
+.bg-winter-hard { background: radial-gradient(circle at top, #1b2735, #090a0f); }
+.bg-winter-transit-after { background: radial-gradient(circle at top, #1e3a2f, #0b1a14); }
+.bg-winter-transit-before { background: radial-gradient(circle at top, #1e2f3a, #0b141a); }
+.bg-summer-transit { background: radial-gradient(circle at top, #3a351e, #1a160b); }
+.bg-summer-hard { background: radial-gradient(circle at top, #3a241e, #1a0f0b); }
+
+.card {
+  width: calc(420px * var(--s));
+  padding: calc(40px * var(--s)) calc(50px * var(--s));
+  border-radius: 20px;
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 25px 50px rgba(0,0,0,.5);
+}
+
+.title { font-size: calc(1.6rem * var(--s)); opacity: .95; }
+.date { font-size: calc(1.1rem * var(--s)); opacity: .75; margin-top: 6px; }
+.solstice { font-size: calc(1.1rem * var(--s)); opacity: .9; margin-top: 10px; }
+
+.main { font-size: calc(2.6rem * var(--s)); margin: 28px 0; line-height: 1.15; }
+
+.metric { margin-top: 22px; }
+.metric .label { font-size: calc(1.05rem * var(--s)); opacity: .8; }
+.metric .value { font-size: calc(2.3rem * var(--s)); }
+
+.inline {
+  margin-top: 18px;
+  display: flex;
+  gap: 22px;
+}
+.inline .block {
+  flex: 1;
+}
+.inline .block .label {
+  font-size: calc(1.05rem * var(--s));
+  opacity: .8;
+}
+.inline .block .value {
+  font-size: calc(1.6rem * var(--s));
+  margin-top: 6px;
+}
+
+.progress {
+  margin-top: 34px;
+  background: rgba(255,255,255,0.18);
+  height: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.bar { height: 100%; width: 0%; transition: width .8s ease; }
+
+/* Progress bar colors */
+.winter { background: #3b82f6; }
+.winter-transit { background: #22c55e; }
+.summer-transit { background: #facc15; }
+.summer { background: #fb923c; }
+
+.footer { margin-top: 22px; font-size: calc(.9rem * var(--s)); opacity: .5; }
+</style>
+</head>
+
+<body class="bg-winter-hard">
+<div class="card">
+  <div class="title">Solar State – Zagreb</div>
+  <div class="date" id="date"></div>
+  <div class="solstice" id="solstice"></div>
+
+  <div class="main" id="title"></div>
+
+  <div class="metric">
+    <div class="label">Sun altitude</div>
+    <div class="value" id="altitude"></div>
+  </div>
+
+  <div class="metric">
+    <div class="label">Sun above horizon</div>
+    <div class="value" id="sunup"></div>
+  </div>
+
+  <div class="inline">
+    <div class="block">
+      <div class="label">Sunrise</div>
+      <div class="value" id="sunrise">--:--</div>
+    </div>
+    <div class="block">
+      <div class="label">Sunset</div>
+      <div class="value" id="sunset">--:--</div>
+    </div>
+  </div>
+
+  <div class="progress">
+    <div class="bar" id="bar"></div>
+  </div>
+
+  <div class="footer">Auto-updates every minute</div>
+</div>
+
+<script>
+async function update() {
+  const params = new URLSearchParams(window.location.search);
+  const qs = params.toString();
+  const url = qs ? ("/data?" + qs) : "/data";
+
+  const r = await fetch(url, { cache: "no-store" });
+  const d = await r.json();
+
+  document.body.className = d.bg;
+  document.getElementById("date").innerText = d.date;
+  document.getElementById("solstice").innerText = d.solstice;
+  document.getElementById("title").innerText = d.title;
+
+  document.getElementById("altitude").innerText = d.sun_altitude + "°";
+  document.getElementById("sunup").innerText = d.sun_up;
+
+  document.getElementById("sunrise").innerText = d.sunrise;
+  document.getElementById("sunset").innerText = d.sunset;
+
+  const bar = document.getElementById("bar");
+  bar.className = "bar " + d.bar;
+  bar.style.width = d.progress + "%";
+}
+
+update();
+setInterval(update, 60000);
+</script>
+</body>
+</html
