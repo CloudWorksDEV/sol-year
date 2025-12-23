@@ -179,7 +179,3 @@ Sunrise/sunset times are calculated using a common **NOAA-style approximation** 
 This is accurate enough for dashboards and planning, but it is not an astronomical ephemeris.
 
 ---
-
-## License
-
-Add your preferred license here (MIT/Apache-2.0/etc.).
